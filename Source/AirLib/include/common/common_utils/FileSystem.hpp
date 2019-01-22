@@ -48,6 +48,19 @@ public:
     #endif
     }
 
+    static std::string getSettingsFolder(std::string fileName)
+    {
+        //Windows
+#ifdef _WIN32
+        std::wstring userProfile = _wgetenv(L"SIMBOTIC_AIRSIM_SETTINGS");
+        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+        return converter.to_bytes(userProfile);
+        // Linux
+#else
+        return combine(std::getenv("SIMBOTIC_AIRSIM_SETTINGS"), fileName);
+#endif
+    }
+
     static std::string getUserDocumentsFolder();
 
 	static std::string getExecutableFolder();

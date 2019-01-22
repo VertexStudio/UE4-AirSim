@@ -8,6 +8,7 @@
 #include "Vehicles/ComputerVision/SimModeComputerVision.h"
 
 #include "common/AirSimSettings.hpp"
+#include "common/common_utils/FileSystem.hpp"
 #include <stdexcept>
 
 
@@ -345,6 +346,7 @@ void ASimHUD::initializeSubWindows()
 // Attempts to parse the settings text from one of multiple locations.
 // First, check the command line for settings provided via "-s" or "--settings" arguments
 // Next, check the executable's working directory for the settings file.
+// Next, check SIMBOTIC_AIRSIM_SETTINGS environment variable.
 // Finally, check the user's documents folder. 
 // If the settings file cannot be read, throw an exception
 
@@ -353,6 +355,8 @@ bool ASimHUD::getSettingsText(std::string& settingsText)
     return (getSettingsTextFromCommandLine(settingsText)
         ||
         readSettingsTextFromFile(FString(msr::airlib::Settings::getExecutableFullPath("settings.json").c_str()), settingsText)
+        ||
+        readSettingsTextFromFile(FString(common_utils::FileSystem::getSettingsFolder("settings.json").c_str()), settingsText)
         ||
         readSettingsTextFromFile(FString(msr::airlib::Settings::Settings::getUserDirectoryFullPath("settings.json").c_str()), settingsText));
 }
